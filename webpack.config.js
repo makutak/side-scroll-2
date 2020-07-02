@@ -1,6 +1,6 @@
 module.exports = {
   mode: 'development',
-  entry: './src/index.js',
+  entry: './src/index.ts',
 
   output: {
     path: `${__dirname}/docs`,
@@ -10,5 +10,17 @@ module.exports = {
   devServer: {
     contentBase: 'docs',
     open: true,
+  },
+
+  module: {
+    rules: [{
+      test: /\.ts$/,
+      use: 'ts-loader',
+    }],
+  },
+  resolve: {
+    extensions: [
+      '.ts', '.js',
+    ],
   },
 };
