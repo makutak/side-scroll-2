@@ -38,14 +38,14 @@ const STAGE = [
   [0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
   [0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1],
-  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 ];
 
 const blockRowCount = STAGE.length;
 const blockColumnCount = STAGE[0].length;
 const blockWidth = 30;
 
-let y = h;
+let y = h - blockWidth;
 let x = ballRadius;
 
 const keyDownHandler = (e: KeyboardEvent) => {
@@ -102,9 +102,26 @@ const drawBall = () => {
   ctx.closePath();
 }
 
+const drawBlock = () => {
+  for (let c = 0; c < blockColumnCount; c++) {
+    for (let r = 0; r < blockRowCount; r++) {
+      if (STAGE[r][c] === 1) {
+        const blockX = c * blockWidth;
+        const blockY = r * blockWidth;
+        ctx.beginPath();
+        ctx.rect(blockX, blockY, blockWidth, blockWidth)
+        ctx.fillStyle = "#8B4513";
+        ctx.fill();
+        ctx.closePath();
+      }
+    }
+  }
+}
+
 const draw = () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBall();
+  drawBlock();
 
   if (y < ballRadius) {
     y = ballRadius;
@@ -137,7 +154,7 @@ const draw = () => {
   }
 
   if (isJump) {
-    y = 1 / 2 * g * (t * t) - (dy * t) + h;
+    y = 1 / 2 * g * (t * t) - (dy * t) + (h - blockWidth);
   }
 
   t += dt;
