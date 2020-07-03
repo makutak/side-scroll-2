@@ -122,7 +122,7 @@ const drawBlock = () => {
 const draw = () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBall();
-  //drawBlock();
+  drawBlock();
 
   if (y < ballRadius) {
     y = ballRadius;
