@@ -47,7 +47,9 @@ const blockColumnCount = STAGE[0].length;
 const blockWidth = 30;
 
 //let y = h - blockWidth;
-let y = h;
+// yには常に +1 下向きに力が加わっているので
+const y0 = h - f
+let y = y0;
 let x = ballRadius;
 let prevY = y;
 
@@ -130,8 +132,8 @@ const draw = () => {
     y = ballRadius;
   }
 
-  if (h < y) {
-    y = h;
+  if (h < y + f) {
+    y = y0
     //isJump = false;
   }
 
@@ -151,7 +153,7 @@ const draw = () => {
     x -= dx;
   }
 
-  if (upPressed && (ballRadius < y) && !isJump && y === h) {
+  if (upPressed && (ballRadius < y) && !isJump && y === y0) {
     isJump = true;
     f = -10;
     console.log('pressed!!!!', isJump);
