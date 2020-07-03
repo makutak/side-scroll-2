@@ -11,6 +11,7 @@ const dt = 1;
 const g = 0.4;
 const dx = 5;
 const dy = 7;
+let f = 1;
 
 let rightPressed = false;
 let leftPressed = false;
@@ -48,6 +49,7 @@ const blockWidth = 30;
 //let y = h - blockWidth;
 let y = h;
 let x = ballRadius;
+let prevY = y;
 
 const keyDownHandler = (e: KeyboardEvent) => {
   const pressed = e.code;
@@ -122,15 +124,15 @@ const drawBlock = () => {
 const draw = () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBall();
-  drawBlock();
-
+  //drawBlock();
+  f = 1;
   if (y < ballRadius) {
     y = ballRadius;
   }
 
   if (h < y) {
     y = h;
-    isJump = false;
+    //isJump = false;
   }
 
   if (w < x + dx) {
@@ -149,16 +151,20 @@ const draw = () => {
     x -= dx;
   }
 
-  if (upPressed && !isJump && (ballRadius < y)) {
-    t = 0;
+  if (upPressed && (ballRadius < y) && !isJump && y === h) {
     isJump = true;
+    f = -10;
+    console.log('pressed!!!!', isJump);
   }
 
-  if (isJump) {
-    y = 1 / 2 * g * (t * t) - (dy * t) + (h - blockWidth);
+  if (!upPressed) {
+    isJump = false;
   }
 
-  t += dt;
+  const tempY = y;
+  y += (y - prevY) + f;
+  prevY = tempY;
+
   requestAnimationFrame(draw);
 }
 
