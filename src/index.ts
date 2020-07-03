@@ -45,7 +45,8 @@ const blockRowCount = STAGE.length;
 const blockColumnCount = STAGE[0].length;
 const blockWidth = 30;
 
-let y = h - blockWidth;
+//let y = h - blockWidth;
+let y = h;
 let x = ballRadius;
 
 const keyDownHandler = (e: KeyboardEvent) => {
@@ -121,7 +122,7 @@ const drawBlock = () => {
 const draw = () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBall();
-  drawBlock();
+  //drawBlock();
 
   if (y < ballRadius) {
     y = ballRadius;
@@ -132,19 +133,19 @@ const draw = () => {
     isJump = false;
   }
 
-  if (w <= x) {
-    x = w - ballRadius;
+  if (w < x + dx) {
+    x = w;
   }
 
-  if (x <= 0) {
+  if (x - dx < 0) {
     x = ballRadius;
   }
 
-  if (rightPressed) {
+  if (rightPressed && x + dx <= w) {
     x += dx;
   }
 
-  if (leftPressed) {
+  if (leftPressed && x - dx >= ballRadius) {
     x -= dx;
   }
 
