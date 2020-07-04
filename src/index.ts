@@ -159,7 +159,7 @@ const getPositionFloor = (x: number, y: number): number => {
   // const posX = Math.round(x / blockWidth);
   // const posY = Math.round(y / blockWidth);
   const posX = Math.floor(x / blockWidth);
-  const tempY = Math.floor((y + ballRadius) / blockWidth);
+  const tempY = Math.floor(y / blockWidth);
 
   const posY = tempY >= 10 ? 10 : tempY;
 
@@ -207,14 +207,18 @@ const draw = () => {
   }
 
   const tempY = y;
-  y += (y - prevY) + f;
-  prevY = tempY;
-
-  if (isCollision(x, y)) {
+  const tempNextY = y + (y - prevY) + f;
+  const nextY = isJump ? tempNextY : tempNextY + ballRadius;
+  if (isCollision(x, nextY)) {
     y = prevY;
     isJump = false;
-  } else if (h < y + f) {
-    y = y0
+  } else {
+    y += (y - prevY) + f;
+    prevY = tempY;
+  }
+
+  if (h <= y + f) {
+    y = h;
     isJump = false;
   }
 
