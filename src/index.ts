@@ -27,8 +27,6 @@ const keyCodes = {
 };
 
 let isJump = false;
-let canJump = false;
-let isGround = true;
 
 const STAGE = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -39,8 +37,8 @@ const STAGE = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
   [0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1],
-  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
-  [1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1],
+  [1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+  [1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1],
   [1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 ];
 
@@ -178,6 +176,7 @@ const getPositionFloor = (x: number, y: number): number => {
 }
 
 const isCollision = (x: number, y: number): boolean => {
+  //console.log(getPositionFloor(x, y) === 1)
   return getPositionFloor(x, y) === 1;
 }
 
@@ -187,27 +186,6 @@ const draw = () => {
   drawBlock();
 
   f = 1;
-
-  if (isCollision(x, y + f)) {
-    y = prevY;
-    isJump = false;
-  } else if (h < y + f) {
-    y = y0
-    canJump = true;
-    isJump = false;
-  }
-
-  if (y < ballRadius) {
-    y = ballRadius;
-  }
-
-  if (w < x + dx) {
-    x = w;
-  }
-
-  if (x - dx < 0) {
-    x = ballRadius;
-  }
 
   if (rightPressed && x + dx <= w) {
     const nextX = x + dx + ballRadius - 1; // 1 は調整用の数値
@@ -225,12 +203,33 @@ const draw = () => {
 
   if (upPressed && (ballRadius < y) && !isJump) {
     isJump = true;
-    f = -12;
+    f = -10;
   }
 
   const tempY = y;
   y += (y - prevY) + f;
   prevY = tempY;
+
+  if (isCollision(x, y)) {
+    y = prevY;
+    isJump = false;
+  } else if (h < y + f) {
+    y = y0
+    isJump = false;
+  }
+
+  if (y < ballRadius) {
+    y = ballRadius;
+  }
+
+  if (w < x + dx) {
+    x = w;
+  }
+
+  if (x - dx < 0) {
+    x = ballRadius;
+  }
+
 
   requestAnimationFrame(draw);
 }
