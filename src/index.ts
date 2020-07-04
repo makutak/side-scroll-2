@@ -42,6 +42,21 @@ const STAGE = [
   [1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 ];
 
+const STAGE_0 = [
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+];
+
+
 const blockRowCount = STAGE.length;
 const blockColumnCount = STAGE[0].length;
 const blockWidth = 30;
@@ -49,7 +64,7 @@ const blockWidth = 30;
 //let y = h - blockWidth;
 // yには常に +1 下向きに力が加わっているので
 const y0 = h - f
-let y = y0;
+let y = y0 - blockWidth;
 let x = ballRadius;
 let prevY = y;
 
@@ -110,7 +125,7 @@ const drawBall = () => {
 const drawBlock = () => {
   for (let c = 0; c < blockColumnCount; c++) {
     for (let r = 0; r < blockRowCount; r++) {
-      if (STAGE[r][c] === 1) {
+      if (STAGE_0[r][c] === 1) {
         const blockX = c * blockWidth;
         const blockY = r * blockWidth;
         ctx.beginPath();
@@ -123,10 +138,26 @@ const drawBlock = () => {
   }
 }
 
+const getPosition = (x: number, y: number): number => {
+  // const posX = Math.round(x / blockWidth);
+  // const posY = Math.round(y / blockWidth);
+  const posX = Math.floor((x + ballRadius) / blockWidth);
+  const posY = Math.floor((y + ballRadius) / blockWidth);
+
+  //console.log(posX, posY);
+  return STAGE_0[posY][posX];
+}
+
+const isCollision = (position: number): boolean => {
+  //console.log('is collision: ', position === 1);
+  return position === 1;
+}
+
 const draw = () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBall();
-  //drawBlock();
+  drawBlock();
+
   f = 1;
   if (y < ballRadius) {
     y = ballRadius;
@@ -146,14 +177,26 @@ const draw = () => {
   }
 
   if (rightPressed && x + dx <= w) {
-    x += dx;
+    const nextX = x + dx;
+    if (!isCollision(getPosition(nextX, y))) {
+      console.log('want monve right');
+      x = nextX;
+    } else {
+      console.log('want monve right, but is collision. ');
+    }
   }
 
   if (leftPressed && x - dx >= ballRadius) {
-    x -= dx;
+    const nextX = x - dx;
+    if (!isCollision(getPosition(nextX, y))) {
+      console.log('want monve left');
+      x = nextX;
+    } else {
+      console.log('want monve left, but is collision. ');
+    }
   }
 
-  if (upPressed && (ballRadius < y) && !isJump && y === y0) {
+  if (upPressed && (ballRadius < y) && !isJump) {
     isJump = true;
     f = -10;
     console.log('pressed!!!!', isJump);
@@ -164,7 +207,14 @@ const draw = () => {
   }
 
   const tempY = y;
-  y += (y - prevY) + f;
+  const nextY = (y - prevY) + f;
+  //console.log(`STAGE[${Math.floor(nextY / 30)}][${Math.floor(x / 30)}]`)
+  if (getPosition(x, y) === 1) {
+    //console.log('下 is 1')
+    y = y;
+  } else {
+    y += (y - prevY) + f;
+  }
   prevY = tempY;
 
   requestAnimationFrame(draw);
