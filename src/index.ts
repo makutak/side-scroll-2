@@ -27,6 +27,8 @@ const keyCodes = {
 };
 
 let isJump = false;
+let canJump = false;
+let isGround = true;
 
 const STAGE = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -36,9 +38,9 @@ const STAGE = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
-  [0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
-  [0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1],
+  [0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1],
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1],
   [1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 ];
 
@@ -53,7 +55,7 @@ const STAGE_0 = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+  [1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
 ];
 
 
@@ -67,7 +69,7 @@ const y0 = h - f
 //let y = y0 - blockWidth;
 let y = 0;
 let x = ballRadius;
-let prevY = y;
+let prevY = 0;
 
 const keyDownHandler = (e: KeyboardEvent) => {
   const pressed = e.code;
@@ -129,6 +131,7 @@ const drawBlock = () => {
       const blockX = c * blockWidth;
       const blockY = r * blockWidth;
 
+      // FOR DBUG
       ctx.beginPath();
       ctx.rect(blockX, blockY, blockWidth, blockWidth)
       //ctx.fillStyle = "#8B4513";
@@ -138,7 +141,7 @@ const drawBlock = () => {
       ctx.closePath();
 
 
-      if (STAGE_0[r][c] === 1) {
+      if (STAGE[r][c] === 1) {
         // const blockX = c * blockWidth;
         // const blockY = r * blockWidth;
         ctx.beginPath();
@@ -154,60 +157,28 @@ const drawBlock = () => {
 }
 
 const getPositionFloor = (x: number, y: number): number => {
+  if (0 > y) return;
   // const posX = Math.round(x / blockWidth);
   // const posY = Math.round(y / blockWidth);
   const posX = Math.floor(x / blockWidth);
-  const posY = Math.floor((y + ballRadius) / blockWidth);
+  const tempY = Math.floor((y + ballRadius) / blockWidth);
 
+  const posY = tempY >= 10 ? 10 : tempY;
+
+  /* FOR DEBUG
   ctx.beginPath();
   ctx.rect(posX * blockWidth, posY * blockWidth, blockWidth, blockWidth)
   ctx.fillStyle = "red";
   //ctx.strokeStyle = "#8B4513";
   ctx.fill();
-
+  */
   //console.log(posX, posY);
-  console.log(`STAGE_0[${posY}][${posX}]`);
-  return STAGE_0[posY][posX];
+  //console.log(`STAGE_0[${posY}][${posX}]`);
+  return STAGE[posY][posX];
 }
 
-const getPositionRound = (x: number, y: number): number => {
-  // const posX = Math.round(x / blockWidth);
-  // const posY = Math.round(y / blockWidth);
-  const posX = Math.round(x / blockWidth);
-  const posY = Math.floor((y + ballRadius) / blockWidth);
-
-  ctx.beginPath();
-  ctx.rect(posX * blockWidth, posY * blockWidth, blockWidth, blockWidth)
-  ctx.fillStyle = "red";
-  //ctx.strokeStyle = "#8B4513";
-  ctx.fill();
-
-  //console.log(posX, posY);
-  console.log(`STAGE_0[${posY}][${posX}]`);
-  return STAGE_0[posY][posX];
-}
-
-const getPositionCeil = (x: number, y: number): number => {
-  // const posX = Math.round(x / blockWidth);
-  // const posY = Math.round(y / blockWidth);
-  const posX = Math.ceil(x / blockWidth);
-  const posY = Math.floor((y + ballRadius) / blockWidth);
-
-  ctx.beginPath();
-  ctx.rect(posX * blockWidth, posY * blockWidth, blockWidth, blockWidth)
-  ctx.fillStyle = "red";
-  //ctx.strokeStyle = "#8B4513";
-  ctx.fill();
-
-  //console.log(posX, posY);
-  console.log(`STAGE_0[${posY}][${posX}]`);
-  return STAGE_0[posY][posX];
-}
-
-
-const isCollision = (position: number): boolean => {
-  //console.log('is collision: ', position === 1);
-  return position === 1;
+const isCollision = (x: number, y: number): boolean => {
+  return getPositionFloor(x, y) === 1;
 }
 
 const draw = () => {
@@ -216,13 +187,18 @@ const draw = () => {
   drawBlock();
 
   f = 1;
-  if (y < ballRadius) {
-    y = ballRadius;
+
+  if (isCollision(x, y + f)) {
+    y = prevY;
+    isJump = false;
+  } else if (h < y + f) {
+    y = y0
+    canJump = true;
+    isJump = false;
   }
 
-  if (h < y + f) {
-    y = y0
-    //isJump = false;
+  if (y < ballRadius) {
+    y = ballRadius;
   }
 
   if (w < x + dx) {
@@ -235,36 +211,24 @@ const draw = () => {
 
   if (rightPressed && x + dx <= w) {
     const nextX = x + dx + ballRadius - 1; // 1 は調整用の数値
-    if (!isCollision(getPositionFloor(nextX, y))) {
-      console.log('want monve right');
+    if (!isCollision(nextX, y)) {
       x += dx;
-    } else {
-      console.log('want monve right, but is collision. ');
     }
   }
 
   if (leftPressed && x - dx >= ballRadius) {
     const nextX = x - dx - ballRadius;
-    if (!isCollision(getPositionFloor(nextX, y))) {
-      console.log('want monve left');
+    if (!isCollision(nextX, y)) {
       x -= dx;
-    } else {
-      console.log('want monve left, but is collision. ');
     }
   }
 
   if (upPressed && (ballRadius < y) && !isJump) {
     isJump = true;
-    f = -10;
-    console.log('pressed!!!!', isJump);
-  }
-
-  if (!upPressed) {
-    isJump = false;
+    f = -12;
   }
 
   const tempY = y;
-  const nextY = (y - prevY) + f;
   y += (y - prevY) + f;
   prevY = tempY;
 
