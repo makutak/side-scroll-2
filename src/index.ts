@@ -1,3 +1,5 @@
+import { requestNextAnimationFrame } from './requestNextAnimationFrame';
+
 const canvas: HTMLCanvasElement = document.getElementById('app') as HTMLCanvasElement;
 const ctx: CanvasRenderingContext2D = canvas.getContext('2d');
 
@@ -28,31 +30,31 @@ const keyCodes = {
 
 let isJump = false;
 
+// const STAGE = [
+//   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+//   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+//   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+//   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+//   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+//   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1],
+//   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
+//   [0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1],
+//   [1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+//   [1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1],
+//   [1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+// ];
+
 const STAGE = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
-  [0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1],
-  [1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
-  [1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1],
-  [1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-];
-
-const STAGE_0 = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0],
   [1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
 ];
 
@@ -180,6 +182,7 @@ const isCollision = (x: number, y: number): boolean => {
   return getPositionFloor(x, y) === 1;
 }
 
+/*
 const draw = () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBall();
@@ -236,9 +239,38 @@ const draw = () => {
   }
 
 
-  requestAnimationFrame(draw);
+  //requestAnimationFrame(draw);
 }
-
+*/
 addEventListener('keydown', keyDownHandler, false);
 addEventListener('keyup', keyUpHandler, false);
-draw();
+
+let fps: number = 0;
+
+const animate = (now: number) => {
+  fps = calculateFps(now);
+  //draw();
+  //requestAnimationFrame(animate);
+  requestNextAnimationFrame(animate);
+}
+
+let lastAnimationFrameTime = 0;
+let lastFpsUpdateTime = 0;
+const fpsElement = document.getElementById('fps');
+console.log('fps element: ', fpsElement);
+
+const calculateFps = (now: number) => {
+  const fps = 1000 / (now - lastAnimationFrameTime);
+  console.log('fps: ', fps);
+  lastAnimationFrameTime = now;
+
+  if (now - lastFpsUpdateTime > 1000) {
+    console.log('true;');
+    lastFpsUpdateTime = now;
+    fpsElement.innerHTML = fps.toFixed(0) + ' fps';
+  }
+
+  return fps;
+}
+
+requestNextAnimationFrame(animate);
