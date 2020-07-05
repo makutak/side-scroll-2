@@ -212,6 +212,7 @@ const draw = () => {
   if (isCollision(x, nextY)) {
     y = prevY;
     isJump = false;
+    f = 0;
   } else {
     y += (y - prevY) + f;
     prevY = tempY;
