@@ -245,10 +245,10 @@ const draw = () => {
 addEventListener('keydown', keyDownHandler, false);
 addEventListener('keyup', keyUpHandler, false);
 
-let fps: number = 0;
+//let fps: number = 0;
 
 const animate = (now: number) => {
-  fps = calculateFps(now);
+  calculateFps(now);
   //draw();
   //requestAnimationFrame(animate);
   requestNextAnimationFrame(animate);
@@ -257,15 +257,12 @@ const animate = (now: number) => {
 let lastAnimationFrameTime = 0;
 let lastFpsUpdateTime = 0;
 const fpsElement = document.getElementById('fps');
-console.log('fps element: ', fpsElement);
 
-const calculateFps = (now: number) => {
+const calculateFps = (now: number): number => {
   const fps = 1000 / (now - lastAnimationFrameTime);
-  console.log('fps: ', fps);
   lastAnimationFrameTime = now;
 
   if (now - lastFpsUpdateTime > 1000) {
-    console.log('true;');
     lastFpsUpdateTime = now;
     fpsElement.innerHTML = fps.toFixed(0) + ' fps';
   }
