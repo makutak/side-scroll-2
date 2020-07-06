@@ -1,3 +1,19 @@
+let lastAnimationFrameTime = 0;
+let lastFpsUpdateTime = 0;
+const fpsElement = document.getElementById('fps');
+
+export const calculateFps = (now: number): number => {
+  const fps = 1000 / (now - lastAnimationFrameTime);
+  lastAnimationFrameTime = now;
+
+  if (now - lastFpsUpdateTime > 1000) {
+    lastFpsUpdateTime = now;
+    fpsElement.innerHTML = fps.toFixed(0) + ' fps';
+  }
+
+  return fps;
+}
+
 export const requestNextAnimationFrame = (function () {
   let originalWebkitMethod: any
   let wrapper: (time: any) => void
