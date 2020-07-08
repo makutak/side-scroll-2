@@ -40,7 +40,7 @@ export class Player {
     //this.ctx.save();
     //this.ctx.transform(-1, 0, 0, 1, 0, 0)
     //console.log(this.positionY)
-    this.ctx.drawImage(this.img, this.offsetX, 0, this.offsetX, this.height, 0, this.positionY, this.height, this.height,);
+    this.ctx.drawImage(this.img, this.offsetX, 0, this.offsetX, this.height, this.positionX, this.positionY, this.height, this.height,);
     //this.ctx.drawImage(this.img, 0, 0, 32, 32, -0 - 32, 416, 32, 32);
     //this.ctx.restore();
     //console.log(this.img);
