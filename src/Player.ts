@@ -1,19 +1,25 @@
 const image = require('./images/miku.png');
+//const image = require('./images/sMario.png');
 
 export class Player {
   ctx: CanvasRenderingContext2D;
+  img: HTMLImageElement = new Image();
   positionX: number;
   positionY: number;
   velocityX: number;
-  ballRadius: number = 15;
-  img: HTMLImageElement;
+  offsetX: number = 50;
 
-  constructor(ctx: CanvasRenderingContext2D, x: number, y: number, r: number) {
+  constructor(ctx: CanvasRenderingContext2D, x: number, y: number) {
     this.ctx = ctx;
-    this.positionX = x;
-    this.positionY = y;
-    this.ballRadius = r;
-    this.img = new Image();
+    this.img.src = image;
+    this.img.onload = () => {
+      this.positionX = x;
+      this.positionY = y - this.img.height;
+    }
+  }
+
+  get height(): number {
+    return this.img.height;
   }
 
   draw(): void {
@@ -33,8 +39,10 @@ export class Player {
     // this.ctx.closePath();
     //this.ctx.save();
     //this.ctx.transform(-1, 0, 0, 1, 0, 0)
-    this.img.src = image;
-    this.ctx.drawImage(this.img, this.positionX, this.positionY - this.img.height);
+    //console.log(this.positionY)
+    this.ctx.drawImage(this.img, this.offsetX, 0, this.offsetX, this.height, 0, this.positionY, this.height, this.height,);
+    //this.ctx.drawImage(this.img, 0, 0, 32, 32, -0 - 32, 416, 32, 32);
+    //this.ctx.restore();
     //console.log(this.img);
     //this.ctx.restore()
     //console.log(this.tex)
