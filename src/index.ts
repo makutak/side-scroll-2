@@ -242,12 +242,13 @@ addEventListener('keyup', keyUpHandler, false);
 
 let fps: number;
 const ballRadius = 15;
-const y0 = canvas.height - ballRadius;
-const x0 = ballRadius;
+const y0 = canvas.height
+const x0 = 0;
 let prevY = 0;
-const player = new Player(ctx, x0, y0, ballRadius);
+const player = new Player(ctx, x0, y0);
 
-
+//ctx.fillStyle = 'rgb(0,0,0)';
+//ctx.fillRect(0, 0, canvas.width, canvas.height);
 const animate = (now: number) => {
   fps = calculateFps(now);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
