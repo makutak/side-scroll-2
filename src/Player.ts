@@ -5,14 +5,18 @@ enum Direcion {
   RIGHT = 'right',
   LEFT = 'left',
 }
+const MAX_FRAME_COUNT = 4;
 
+const ONE_FRAME_WIDTH = 47;
 export class Player {
   ctx: CanvasRenderingContext2D;
   img: HTMLImageElement = new Image();
   positionX: number;
   positionY: number;
-  velocityX: number;
-  offsetX: number = 50;
+  velocityX: number = 2;
+  offsetX: number = ONE_FRAME_WIDTH;
+  currentFrame: number = 0;
+
   direction: Direcion = Direcion.RIGHT;;
   constructor(ctx: CanvasRenderingContext2D, x: number, y: number) {
     this.ctx = ctx;
@@ -37,7 +41,7 @@ export class Player {
         this.img,
         this.offsetX,
         0,
-        this.offsetX,
+        ONE_FRAME_WIDTH,
         this.height,
         -this.positionX - this.height,
         this.positionY,
@@ -51,7 +55,7 @@ export class Player {
         this.img,
         this.offsetX,
         0,
-        this.offsetX,
+        ONE_FRAME_WIDTH,
         this.height,
         this.positionX,
         this.positionY,
@@ -64,10 +68,25 @@ export class Player {
   move(rightPressed: boolean, leftPressed: boolean): void {
     if (rightPressed) {
       this.direction = Direcion.RIGHT;
+      this.positionX += this.velocityX;
+      this.frameByFrame();
     }
 
     if (leftPressed) {
       this.direction = Direcion.LEFT;
+      this.positionX -= this.velocityX;
+      this.frameByFrame();
+    }
+  }
+
+  private frameByFrame(): void {
+    if (this.currentFrame++ >= MAX_FRAME_COUNT) {
+      if (this.offsetX % ONE_FRAME_WIDTH === 0 && this.offsetX !== ONE_FRAME_WIDTH * 5) {
+        this.offsetX += ONE_FRAME_WIDTH;
+      } else {
+        this.offsetX = ONE_FRAME_WIDTH;
+      }
+      this.currentFrame = 0;
     }
   }
 }
