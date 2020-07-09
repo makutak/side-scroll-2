@@ -13,10 +13,24 @@ module.exports = {
   },
 
   module: {
-    rules: [{
-      test: /\.ts$/,
-      use: 'ts-loader',
-    }],
+    rules: [
+      {
+        test: /\.ts$/,
+        use: 'ts-loader',
+      },
+      {
+        test: /\.(png|svg|jpg|gif)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              esModule: false,
+            }
+          }
+
+        ],
+      },
+    ],
   },
   resolve: {
     extensions: [

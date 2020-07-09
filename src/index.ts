@@ -1,9 +1,8 @@
+import { requestNextAnimationFrame, calculateFps } from './requestNextAnimationFrame';
+import { Player } from './Player';
+
 const canvas: HTMLCanvasElement = document.getElementById('app') as HTMLCanvasElement;
 const ctx: CanvasRenderingContext2D = canvas.getContext('2d');
-
-const ballRadius = 15;
-const h = canvas.height - ballRadius;
-const w = canvas.width - ballRadius;
 
 let t = 0;
 const dt = 1;
@@ -12,6 +11,44 @@ const g = 0.4;
 const dx = 5;
 const dy = 7;
 let f = 1;
+// const STAGE = [
+//   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+//   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+//   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+//   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+//   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+//   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1],
+//   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
+//   [0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1],
+//   [1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+//   [1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1],
+//   [1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+// ];
+
+const STAGE = [
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0],
+  [1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+];
+
+
+const blockRowCount = STAGE.length;
+const blockColumnCount = STAGE[0].length;
+const blockWidth = 30;
+
+//let y = h - blockWidth;
+// yには常に +1 下向きに力が加わっているので
+//const y0 = h - f
+///let y = y0 - blockWidth;
+
 
 let rightPressed = false;
 let leftPressed = false;
@@ -27,47 +64,6 @@ const keyCodes = {
 };
 
 let isJump = false;
-
-const STAGE = [
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
-  [0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1],
-  [1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
-  [1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1],
-  [1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-];
-
-const STAGE_0 = [
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-  [1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-];
-
-
-const blockRowCount = STAGE.length;
-const blockColumnCount = STAGE[0].length;
-const blockWidth = 30;
-
-//let y = h - blockWidth;
-// yには常に +1 下向きに力が加わっているので
-const y0 = h - f
-//let y = y0 - blockWidth;
-let y = 0;
-let x = ballRadius;
-let prevY = 0;
 
 const keyDownHandler = (e: KeyboardEvent) => {
   const pressed = e.code;
@@ -114,72 +110,75 @@ const keyUpHandler = (e: KeyboardEvent) => {
       break;
   }
 }
+addEventListener('keydown', keyDownHandler, false);
+addEventListener('keyup', keyUpHandler, false);
 
-const drawBall = () => {
-  ctx.beginPath();
-  ctx.arc(x, y, ballRadius, 0, Math.PI * 2, false);
-  ctx.fillStyle = "#0095DD";
-  ctx.fill();
-  ctx.closePath();
-}
+// const drawBall = () => {
+//   ctx.beginPath();
+//   ctx.arc(x, y, ballRadius, 0, Math.PI * 2, false);
+//   ctx.fillStyle = "#0095DDbb";
+//   ctx.fill();
+//   ctx.closePath();
+// }
 
-const drawBlock = () => {
-  for (let c = 0; c < blockColumnCount; c++) {
-    for (let r = 0; r < blockRowCount; r++) {
-      const blockX = c * blockWidth;
-      const blockY = r * blockWidth;
+// const drawBlock = () => {
+//   for (let c = 0; c < blockColumnCount; c++) {
+//     for (let r = 0; r < blockRowCount; r++) {
+//       const blockX = c * blockWidth;
+//       const blockY = r * blockWidth;
 
-      // FOR DBUG
-      ctx.beginPath();
-      ctx.rect(blockX, blockY, blockWidth, blockWidth)
-      //ctx.fillStyle = "#8B4513";
-      ctx.strokeStyle = "blue";
-      //ctx.fill();
-      ctx.stroke();
-      ctx.closePath();
+//       // FOR DBUG
+//       ctx.beginPath();
+//       ctx.rect(blockX, blockY, blockWidth, blockWidth)
+//       //ctx.fillStyle = "#8B4513";
+//       ctx.strokeStyle = "blue";
+//       //ctx.fill();
+//       ctx.stroke();
+//       ctx.closePath();
 
 
-      if (STAGE[r][c] === 1) {
-        // const blockX = c * blockWidth;
-        // const blockY = r * blockWidth;
-        ctx.beginPath();
-        ctx.rect(blockX, blockY, blockWidth, blockWidth)
-        ctx.fillStyle = "rgba(55, 27, 7, 0.5)";
-        //ctx.strokeStyle = "black";
-        ctx.fill();
-        //ctx.stroke();
-        ctx.closePath();
-      }
-    }
-  }
-}
+//       if (STAGE[r][c] === 1) {
+//         // const blockX = c * blockWidth;
+//         // const blockY = r * blockWidth;
+//         ctx.beginPath();
+//         ctx.rect(blockX, blockY, blockWidth, blockWidth)
+//         ctx.fillStyle = "rgba(55, 27, 7, 0.5)";
+//         //ctx.strokeStyle = "black";
+//         ctx.fill();
+//         //ctx.stroke();
+//         ctx.closePath();
+//       }
+//     }
+//   }
+// }
 
-const getPositionFloor = (x: number, y: number): number => {
-  if (0 > y) return;
-  // const posX = Math.round(x / blockWidth);
-  // const posY = Math.round(y / blockWidth);
-  const posX = Math.floor(x / blockWidth);
-  const tempY = Math.floor(y / blockWidth);
+// const getPositionFloor = (x: number, y: number): number => {
+//   if (0 > y) return;
+//   // const posX = Math.round(x / blockWidth);
+//   // const posY = Math.round(y / blockWidth);
+//   const posX = Math.floor(x / blockWidth);
+//   const tempY = Math.floor(y / blockWidth);
 
-  const posY = tempY >= 10 ? 10 : tempY;
+//   const posY = tempY >= 10 ? 10 : tempY;
 
-  /* FOR DEBUG
-  ctx.beginPath();
-  ctx.rect(posX * blockWidth, posY * blockWidth, blockWidth, blockWidth)
-  ctx.fillStyle = "red";
-  //ctx.strokeStyle = "#8B4513";
-  ctx.fill();
-  */
-  //console.log(posX, posY);
-  //console.log(`STAGE_0[${posY}][${posX}]`);
-  return STAGE[posY][posX];
-}
+//   /* FOR DEBUG
+//   ctx.beginPath();
+//   ctx.rect(posX * blockWidth, posY * blockWidth, blockWidth, blockWidth)
+//   ctx.fillStyle = "red";
+//   //ctx.strokeStyle = "#8B4513";
+//   ctx.fill();
+//   */
+//   //console.log(posX, posY);
+//   //console.log(`STAGE_0[${posY}][${posX}]`);
+//   return STAGE[posY][posX];
+// }
 
-const isCollision = (x: number, y: number): boolean => {
-  //console.log(getPositionFloor(x, y) === 1)
-  return getPositionFloor(x, y) === 1;
-}
+// const isCollision = (x: number, y: number): boolean => {
+//   //console.log(getPositionFloor(x, y) === 1)
+//   return getPositionFloor(x, y) === 1;
+// }
 
+/*
 const draw = () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBall();
@@ -212,6 +211,7 @@ const draw = () => {
   if (isCollision(x, nextY)) {
     y = prevY;
     isJump = false;
+    f = 0;
   } else {
     y += (y - prevY) + f;
     prevY = tempY;
@@ -235,9 +235,29 @@ const draw = () => {
   }
 
 
-  requestAnimationFrame(draw);
+  //requestAnimationFrame(draw);
+}
+*/
+let fps: number;
+const ballRadius = 15;
+const y0 = canvas.height
+const x0 = 0;
+let prevY = 0;
+const player = new Player(ctx, x0, y0);
+
+//ctx.fillStyle = 'rgb(0,0,0)';
+//ctx.fillRect(0, 0, canvas.width, canvas.height);
+const animate = (now: number) => {
+  fps = calculateFps(now);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  player.draw();
+  player.move(rightPressed, leftPressed);
+  //console.log('right pressed', rightPressed)
+  // console.log('left pressed', leftPressed)
+  //console.log(player.direction);
+  requestNextAnimationFrame(animate);
+  //requestAnimationFrame(animate);
 }
 
-addEventListener('keydown', keyDownHandler, false);
-addEventListener('keyup', keyUpHandler, false);
-draw();
+requestNextAnimationFrame(animate);
+//animate(fps);
