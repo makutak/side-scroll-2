@@ -69,17 +69,17 @@ export class Player {
     if (rightPressed) {
       this.direction = Direcion.RIGHT;
       this.positionX += this.velocityX;
-      this.frameByFrame();
+      this.makeFrameByFrame();
     }
 
     if (leftPressed) {
       this.direction = Direcion.LEFT;
       this.positionX -= this.velocityX;
-      this.frameByFrame();
+      this.makeFrameByFrame();
     }
   }
 
-  private frameByFrame(): void {
+  private makeFrameByFrame(): void {
     if (this.currentFrame++ >= MAX_FRAME_COUNT) {
       if (this.offsetX % ONE_FRAME_WIDTH === 0 && this.offsetX !== ONE_FRAME_WIDTH * 5) {
         this.offsetX += ONE_FRAME_WIDTH;
