@@ -11,22 +11,6 @@ const g = 0.4;
 const dx = 5;
 const dy = 7;
 let f = 1;
-
-let rightPressed = false;
-let leftPressed = false;
-let downPressed = false;
-let upPressed = false
-
-const keyCodes = {
-  space: "Space",
-  right: "ArrowRight",
-  left: "ArrowLeft",
-  up: "ArrowUp",
-  down: "ArrowDown",
-};
-
-let isJump = false;
-
 // const STAGE = [
 //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -64,6 +48,22 @@ const blockWidth = 30;
 // yには常に +1 下向きに力が加わっているので
 //const y0 = h - f
 ///let y = y0 - blockWidth;
+
+
+let rightPressed = false;
+let leftPressed = false;
+let downPressed = false;
+let upPressed = false
+
+const keyCodes = {
+  space: "Space",
+  right: "ArrowRight",
+  left: "ArrowLeft",
+  up: "ArrowUp",
+  down: "ArrowDown",
+};
+
+let isJump = false;
 
 const keyDownHandler = (e: KeyboardEvent) => {
   const pressed = e.code;
@@ -110,6 +110,8 @@ const keyUpHandler = (e: KeyboardEvent) => {
       break;
   }
 }
+addEventListener('keydown', keyDownHandler, false);
+addEventListener('keyup', keyUpHandler, false);
 
 // const drawBall = () => {
 //   ctx.beginPath();
@@ -236,10 +238,6 @@ const draw = () => {
   //requestAnimationFrame(draw);
 }
 */
-addEventListener('keydown', keyDownHandler, false);
-addEventListener('keyup', keyUpHandler, false);
-
-
 let fps: number;
 const ballRadius = 15;
 const y0 = canvas.height
@@ -253,7 +251,10 @@ const animate = (now: number) => {
   fps = calculateFps(now);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   player.draw();
-
+  player.move(rightPressed, leftPressed);
+  //console.log('right pressed', rightPressed)
+  // console.log('left pressed', leftPressed)
+  //console.log(player.direction);
   requestNextAnimationFrame(animate);
   //requestAnimationFrame(animate);
 }
