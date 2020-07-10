@@ -84,7 +84,7 @@ export class Player {
       if (this.offsetX % ONE_FRAME_WIDTH === 0 && this.offsetX !== ONE_FRAME_WIDTH * 5) {
         this.offsetX += ONE_FRAME_WIDTH;
       } else {
-        this.offsetX = ONE_FRAME_WIDTH;
+        this.offsetX = 0;
       }
       this.currentFrame = 0;
     }
