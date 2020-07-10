@@ -13,7 +13,8 @@ export class Player {
   img: HTMLImageElement = new Image();
   positionX: number;
   positionY: number;
-  velocityX: number = 2;
+  dx: number = 2;
+  dy: number = 2;
   offsetX: number = ONE_FRAME_WIDTH;
   currentFrame: number = 0;
 
@@ -68,13 +69,13 @@ export class Player {
   move(rightPressed: boolean, leftPressed: boolean): void {
     if (rightPressed) {
       this.direction = Direcion.RIGHT;
-      this.positionX += this.velocityX;
+      this.positionX += this.dx;
       this.makeFrameByFrame();
     }
 
     if (leftPressed) {
       this.direction = Direcion.LEFT;
-      this.positionX -= this.velocityX;
+      this.positionX -= this.dx;
       this.makeFrameByFrame();
     }
   }
@@ -84,7 +85,7 @@ export class Player {
       if (this.offsetX % ONE_FRAME_WIDTH === 0 && this.offsetX !== ONE_FRAME_WIDTH * 5) {
         this.offsetX += ONE_FRAME_WIDTH;
       } else {
-        this.offsetX = ONE_FRAME_WIDTH;
+        this.offsetX = 0;
       }
       this.currentFrame = 0;
     }
