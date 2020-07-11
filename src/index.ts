@@ -9,21 +9,32 @@ let simpleLevelPlan = `
 ......##############..
 ......................`;
 
-class Actor {
-  static create(vec, Vec, ch: string) { throw new Error('not yet implimented'); }
+interface IActor<T> {
+  create(vec: Vec, ch: string): T;
 }
+
+abstract class Actor { }
+
+function staticImplements<T>() {
+  return (constructor: T) => { }
+}
+
 class Vec { constructor(x: number, y: number) { console.log('not yet implmented') } }
 
+
+@staticImplements<IActor<Coin>>()
 class Coin extends Actor {
-  static create(vec: Vec, ch: string) { console.log('create'); }
+  static create(vec: Vec, ch: string) { return new Coin(); }
 }
 
+@staticImplements<IActor<Lava>>()
 class Lava extends Actor {
-  static create(vec: Vec, ch: string) { console.log('create'); }
+  static create(vec: Vec, ch: string) { return new Lava(); }
 }
 
+@staticImplements<IActor<Player>>()
 class Player extends Actor {
-  static create(vec: Vec, ch: string) { console.log('create'); }
+  static create(vec: Vec, ch: string) { return new Player(); }
 }
 
 const levelChars = {
