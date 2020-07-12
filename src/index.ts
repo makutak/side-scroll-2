@@ -13,7 +13,9 @@ interface IActor<T> {
   create(vec: Vec, ch: string): T;
 }
 
-abstract class Actor { }
+abstract class Actor {
+  abstract get type(): string;
+}
 
 function staticImplements<T>() {
   return (constructor: T) => { }
