@@ -70,6 +70,32 @@ class Level {
   rows: string[][];
 }
 
+enum Status {
+  WON = 'won',
+  LOST = 'lost',
+  PLAYING = 'playing',
+}
+
+class State {
+  level: Level;
+  actors: Actor[];
+  status: Status;
+
+  constructor(level: Level, actors: Actor[], status: Status) {
+    this.level = level;
+    this.actors = actors;
+    this.status = status;
+  }
+
+  static start(level: Level) {
+    return new State(level, level.startActors, Status.PLAYING);
+  }
+
+  get player() {
+    return this.actors.find((a: Actor) => a.type === 'player')
+  }
+}
+
 const level = new Level(simpleLevelPlan);
 
 console.log(level);
