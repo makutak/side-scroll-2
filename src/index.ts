@@ -24,19 +24,28 @@ function staticImplements<T>() {
 class Vec { constructor(x: number, y: number) { console.log('not yet implmented') } }
 
 
+enum ActorType {
+  COIN = 'coin',
+  LAVA = 'lava',
+  PLAYER = 'player',
+}
+
 @staticImplements<IActor<Coin>>()
 class Coin extends Actor {
   static create(vec: Vec, ch: string) { return new Coin(); }
+  get type(): string { return ActorType.COIN; }
 }
 
 @staticImplements<IActor<Lava>>()
 class Lava extends Actor {
   static create(vec: Vec, ch: string) { return new Lava(); }
+  get type(): string { return ActorType.LAVA; }
 }
 
 @staticImplements<IActor<Player>>()
 class Player extends Actor {
   static create(vec: Vec, ch: string) { return new Player(); }
+  get type(): string { return ActorType.PLAYER; }
 }
 
 const levelChars = {
@@ -94,7 +103,7 @@ class State {
   }
 
   get player() {
-    return this.actors.find((a: Actor) => a.type === 'player')
+    return this.actors.find((a: Actor) => a.type === ActorType.PLAYER);
   }
 }
 
