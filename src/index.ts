@@ -14,6 +14,8 @@ interface IActor<T> {
 }
 
 abstract class Actor {
+  abstract pos: Vec;
+  abstract size: Vec;
   abstract get type(): string;
 }
 
@@ -48,20 +50,70 @@ enum ActorType {
 
 @staticImplements<IActor<Coin>>()
 class Coin extends Actor {
-  static create(vec: Vec, ch: string) { return new Coin(); }
+  pos: Vec;
+  basePos: Vec;
+  wobble: number;
+  size: Vec = new Vec(0.6, 0.6);
+
+  constructor(pos: Vec, basePos: Vec, wobble: number) {
+    super();
+    this.pos = pos;
+    this.basePos = basePos;
+    this.wobble = wobble;
+  }
+
   get type(): string { return ActorType.COIN; }
+
+  static create(pos: Vec) {
+    const basePos = pos.plus(new Vec(0.2, 0.1));
+    return new Coin(basePos, basePos, Math.random() * Math.PI * 2);
+  }
 }
 
 @staticImplements<IActor<Lava>>()
 class Lava extends Actor {
-  static create(vec: Vec, ch: string) { return new Lava(); }
+  pos: Vec;
+  speed: Vec;
+  reset?: Vec;
+  size: Vec = new Vec(1, 1);
+
+  constructor(pos: Vec, speed: Vec, reset?: Vec) {
+    super();
+    this.pos = pos;
+    this.speed = speed;
+    this.reset = reset;
+  }
+
   get type(): string { return ActorType.LAVA; }
+
+  static create(pos: Vec, ch: string) {
+    if (ch === '=') {
+      return new Lava(pos, new Vec(2, 0));
+    } else if (ch === '|') {
+      return new Lava(pos, new Vec(0, 2));
+    } else if (ch === 'v') {
+      return new Lava(pos, new Vec(0, 3), pos);
+    }
+  }
 }
 
 @staticImplements<IActor<Player>>()
 class Player extends Actor {
-  static create(vec: Vec, ch: string) { return new Player(); }
+  pos: Vec;
+  speed: Vec;
+  size: Vec = new Vec(0.8, 1.5);
+
+  constructor(pos: Vec, speed: Vec) {
+    super();
+    this.pos = pos;
+    this.speed = speed;
+  }
+
   get type(): string { return ActorType.PLAYER; }
+
+  static create(pos: Vec) {
+    return new Player(pos.plus(new Vec(0, - 0.5)), new Vec(0, 0));
+  }
 }
 
 const levelChars = {
@@ -123,6 +175,7 @@ class State {
   }
 }
 
-const level = new Level(simpleLevelPlan);
+const simpleLevel = new Level(simpleLevelPlan);
 
-console.log(level);
+console.log(simpleLevel);
+console.log(`${simpleLevel.width} by ${simpleLevel.height}`);
