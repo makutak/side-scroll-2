@@ -2,11 +2,12 @@ export const staticImplements = <T>() => {
   return (constructor: T) => { }
 };
 
-interface Attr {
+interface Attrs {
   class: string;
+  style?: string;
 }
 
-export const elt = (name: string, attrs: Attr[], ...children: Node[]): HTMLElement => {
+export const elt = (name: string, attrs: Attrs, ...children: Node[]): HTMLElement => {
   let dom = document.createElement(name);
 
   for (let attr of Object.keys(attrs)) {

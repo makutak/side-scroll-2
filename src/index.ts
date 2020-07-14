@@ -1,4 +1,5 @@
 import { Actor, Player, Coin, Lava, Vec, ActorType } from './actors';
+import { elt } from './lib/util';
 
 let simpleLevelPlan = `
 ......................
@@ -72,6 +73,22 @@ class State {
 }
 
 const simpleLevel = new Level(simpleLevelPlan);
+const drawGrid = (level: Node) => {
+  return level;
+};
+
+class DOMDisplay {
+  dom: HTMLElement;
+  actorLayer: Node | null;
+
+  constructor(parent: HTMLElement, level: Node) {
+    this.dom = elt('div', { class: 'game' }, drawGrid(level));
+    this.actorLayer = null;
+    parent.appendChild(this.dom);
+  }
+
+  cleaer() { this.dom.remove(); }
+}
 
 console.log(simpleLevel);
 console.log(`${simpleLevel.width} by ${simpleLevel.height}`);
