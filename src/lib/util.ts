@@ -1,9 +1,11 @@
+import { Level } from '../index';
+
 export const staticImplements = <T>() => {
   return (constructor: T) => { }
 };
 
 interface Attrs {
-  class: string;
+  class?: string;
   style?: string;
 }
 
@@ -20,3 +22,18 @@ export const elt = (name: string, attrs: Attrs, ...children: Node[]): HTMLElemen
 
   return dom;
 };
+
+const scale = 20;
+
+export const drawGrid = (level: Level) => {
+  return elt('table', {
+    class: 'background',
+    style: `width: ${level.width * scale}px`,
+  }, ...level.rows.map((row) =>
+    elt('tr', {
+      style: `height: ${scale}px`,
+      ...row.map((type) => elt('td', { class: type }))
+    })
+  )
+  )
+}
