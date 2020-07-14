@@ -19,9 +19,13 @@ const levelChars = {
   "=": Lava, "|": Lava, "v": Lava
 };
 
-class Level {
+export class Level {
+  height: number;
+  width: number;
+  startActors: Actor[];
+  rows: string[][];
+
   constructor(plan: string) {
-    console.log(plan);
     let rows = plan.trim().split('\n').map((l) => l.split(''));
     this.height = rows.length;
     this.width = rows[0].length;
@@ -39,11 +43,6 @@ class Level {
       })
     })
   }
-
-  height: number;
-  width: number;
-  startActors: Actor[];
-  rows: string[][];
 }
 
 enum Status {
