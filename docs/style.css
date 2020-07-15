@@ -3,3 +3,21 @@
   width: 480px;
   height: 24px;
 }
+
+.background {
+  background: : rgb(52, 166 251);
+  table-layout: fix;
+  border-spacing: 0;
+}
+
+background td {
+  padding: 0;
+}
+
+.lava {
+  background: rgb(255, 100, 100);
+}
+
+.wall {
+  background: white;
+}
