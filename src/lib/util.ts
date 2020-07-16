@@ -1,3 +1,4 @@
+import { Actor } from '../actors';
 import { Level } from '../index';
 
 export const staticImplements = <T>() => {
@@ -34,6 +35,16 @@ export const drawGrid = (level: Level) => {
       style: `height: ${scale}px`,
       ...row.map((type) => elt('td', { class: type }))
     })
-  )
-  )
-}
+  ))
+};
+
+export const drawActors = (actors: Actor[]) => {
+  return elt('div', {}, ...actors.map((actor: Actor) => {
+    let rect = elt('div', {class: `actor ${actor.type}`});
+    rect.style.width = `${actor.size.x * scale}px`;
+    rect.style.height = `${actor.size.y * scale}px`;
+    rect.style.left = `${actor.pos.x * scale}px`;
+    rect.style.top = `${actor.pos.y * scale}px`;
+    return rect;
+  }));
+};
