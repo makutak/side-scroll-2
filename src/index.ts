@@ -1,5 +1,5 @@
 import { Actor, Player, Coin, Lava, Vec, ActorType } from './actors';
-import { drawActors, elt } from './lib/util';
+import { drawActors, elt, SCALE } from './lib/util';
 
 let simpleLevelPlan = `
 ......................
@@ -91,6 +91,7 @@ class DOMDisplay {
 
 interface DOMDisplay {
   syncState(state: State): void;
+  scrollPlayerIntoView(state: State): void;
 }
 
 DOMDisplay.prototype.syncState = (state: State) => {
@@ -99,6 +100,33 @@ DOMDisplay.prototype.syncState = (state: State) => {
   this.dom.appendChild(this.actorLayer);
   this.dom.className = `game ${state.status}`;
   this.scrollPlayerIntoView(state);
+}
+
+DOMDisplay.prototype.scrollPlayerIntoView = (state: State) => {
+  let width = this.dom.clientWidth;
+  let height = this.dom.clientHeight;
+  let margin = width / 3;
+
+  // The viewport
+  let left = this.dom.scrollLeft, right = left + width;
+  let top = this.dom.scrollTop, bottom = top + height;
+
+  let player = state.player;
+  let center = player.pos
+    .plus(player.size.times(0.5))
+    .times(SCALE);
+
+  if (center.x < left + margin) {
+    this.dom.scrollLeft = center.x - margin;
+  } else if (center.x > right - margin) {
+    this.dom.scrollLeft = center.x + margin - width;
+  }
+
+  if (center.y < top + margin) {
+    this.dom.scrollTop = center.y - margin;
+  } else if (center.y > bottom - margin) {
+    this.dom.scrollTop = center.y + margin - height;
+  }
 }
 
 console.log(simpleLevel);
