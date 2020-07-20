@@ -1,5 +1,5 @@
 import { Actor, Player, Coin, Lava, Vec, ActorType } from './actors';
-import { elt } from './lib/util';
+import { drawActors, elt } from './lib/util';
 
 let simpleLevelPlan = `
 ......................
@@ -87,6 +87,18 @@ class DOMDisplay {
   }
 
   cleaer() { this.dom.remove(); }
+}
+
+interface DOMDisplay {
+  syncState(state: State): void;
+}
+
+DOMDisplay.prototype.syncState = (state: State) => {
+  if (this.actorLayer) this?.actorLayer.remove();
+  this.actorLayer = drawActors(state.actors);
+  this.dom.appendChild(this.actorLayer);
+  this.dom.className = `game ${state.status}`;
+  this.scrollPlayerIntoView(state);
 }
 
 console.log(simpleLevel);
