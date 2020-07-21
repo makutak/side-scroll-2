@@ -14,7 +14,9 @@ export const elt = (name: string, attrs: Attrs, ...children: Node[]): HTMLElemen
   let dom = document.createElement(name);
 
   for (let attr of Object.keys(attrs)) {
-    dom.setAttribute(attr, attr[attr]);
+    console.log('attr: ', attr);
+    console.log('attrs[attr]: ', attrs[attr]);
+    dom.setAttribute(attr, attrs[attr]);
   }
 
   for (let child of children) {
@@ -26,15 +28,13 @@ export const elt = (name: string, attrs: Attrs, ...children: Node[]): HTMLElemen
 
 export const SCALE = 20;
 
-export const drawGrid = (level: Level) => {
+export const drawGrid = (level: Level): HTMLElement => {
   return elt('table', {
     class: 'background',
     style: `width: ${level.width * SCALE}px`,
   }, ...level.rows.map((row) =>
-    elt('tr', {
-      style: `height: ${SCALE}px`,
-      ...row.map((type) => elt('td', { class: type }))
-    })
+    elt('tr', { style: `height: ${SCALE}px` },
+      ...row.map((type) => elt('td', { class: type })))
   ))
 };
 

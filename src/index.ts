@@ -1,5 +1,5 @@
 import { Actor, Player, Coin, Lava, Vec, ActorType } from './actors';
-import { drawActors, elt, SCALE } from './lib/util';
+import { drawActors, elt, SCALE, drawGrid } from './lib/util';
 
 let simpleLevelPlan = `
 ......................
@@ -71,31 +71,67 @@ class State {
   }
 }
 
-const simpleLevel = new Level(simpleLevelPlan);
-const drawGrid = (level: Node) => {
-  return level;
-};
-
 class DOMDisplay {
   dom: HTMLElement;
-  actorLayer: Node | null;
+  actorLayer: HTMLElement | null;
 
-  constructor(parent: HTMLElement, level: Node) {
+  constructor(parent: HTMLElement, level: Level) {
     this.dom = elt('div', { class: 'game' }, drawGrid(level));
     this.actorLayer = null;
     parent.appendChild(this.dom);
   }
 
   cleaer() { this.dom.remove(); }
+
+  syncState(state: State) {
+    if (this.actorLayer) this.actorLayer.remove();
+    this.actorLayer = drawActors(state.actors);
+    this.dom.appendChild(this.actorLayer);
+    this.dom.className = `game ${state.status}`;
+    this.scrollPlayerIntoView(state);
+  }
+
+  scrollPlayerIntoView(state: State) {
+    let width = this.dom.clientWidth;
+    let height = this.dom.clientHeight;
+    let margin = width / 3;
+
+    // The viewport
+    let left = this.dom.scrollLeft, right = left + width;
+    let top = this.dom.scrollTop, bottom = top + height;
+
+    let player = state.player;
+    let center = player.pos
+      .plus(player.size.times(0.5))
+      .times(SCALE);
+
+    if (center.x < left + margin) {
+      this.dom.scrollLeft = center.x - margin;
+    } else if (center.x > right - margin) {
+      this.dom.scrollLeft = center.x + margin - width;
+    }
+
+    if (center.y < top + margin) {
+      this.dom.scrollTop = center.y - margin;
+    } else if (center.y > bottom - margin) {
+      this.dom.scrollTop = center.y + margin - height;
+    }
+  }
 }
 
+const simpleLevel = new Level(simpleLevelPlan);
+console.log(`${simpleLevel.width} by ${simpleLevel.height}`);
+const display = new DOMDisplay(document.body, simpleLevel);
+display.syncState(State.start(simpleLevel));
+
+/*
 interface DOMDisplay {
   syncState(state: State): void;
   scrollPlayerIntoView(state: State): void;
 }
 
 DOMDisplay.prototype.syncState = (state: State) => {
-  if (this.actorLayer) this?.actorLayer.remove();
+  if (this.actorLayer) this.actorLayer.remove();
   this.actorLayer = drawActors(state.actors);
   this.dom.appendChild(this.actorLayer);
   this.dom.className = `game ${state.status}`;
@@ -128,6 +164,5 @@ DOMDisplay.prototype.scrollPlayerIntoView = (state: State) => {
     this.dom.scrollTop = center.y + margin - height;
   }
 }
+*/
 
-console.log(simpleLevel);
-console.log(`${simpleLevel.width} by ${simpleLevel.height}`);
