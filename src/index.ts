@@ -88,6 +88,13 @@ class State {
   get player() {
     return this.actors.find((a: Actor) => a.type === ActorType.PLAYER);
   }
+
+
+  update(time: number, keys: unknown): State {
+    let actors = this.actors;
+    let newState = new State(this.level, actors, this.status);
+    return newState;
+  }
 }
 
 class DOMDisplay {
