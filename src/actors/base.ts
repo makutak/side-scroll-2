@@ -1,4 +1,5 @@
 import { Vec } from './Vec';
+import { State } from '../State';
 
 export enum ActorType {
   COIN = 'coin',
@@ -14,4 +15,9 @@ export abstract class Actor {
   abstract pos: Vec;
   abstract size: Vec;
   abstract get type(): string;
+  abstract update(time: number, state: State, keys?: unknown) : Actor;
+}
+
+export interface GameObject {
+  collide(state: State): State;
 }

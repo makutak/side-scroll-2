@@ -1,5 +1,5 @@
 import { Actor } from '../actors';
-import { Level } from '../index';
+import { Level } from '../Level';
 
 export const staticImplements = <T>() => {
   return (constructor: T) => { }
@@ -38,7 +38,7 @@ export const drawGrid = (level: Level): HTMLElement => {
   ))
 };
 
-export const drawActors = (actors: Actor[]) => {
+export const drawActors = (actors: Actor[]): HTMLElement => {
   return elt('div', {}, ...actors.map((actor: Actor) => {
     let rect = elt('div', { class: `actor ${actor.type}` });
     rect.style.width = `${actor.size.x * SCALE}px`;
@@ -47,4 +47,11 @@ export const drawActors = (actors: Actor[]) => {
     rect.style.top = `${actor.pos.y * SCALE}px`;
     return rect;
   }));
+};
+
+export const overlap = (actor1: Actor, actor2: Actor) => {
+  return actor1.pos.x + actor1.size.x > actor2.pos.x &&
+    actor1.pos.x < actor2.pos.x + actor2.size.x &&
+    actor1.pos.y + actor1.size.y > actor2.pos.y &&
+    actor1.pos.y < actor2.pos.y + actor2.size.y;
 };

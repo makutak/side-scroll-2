@@ -1,9 +1,10 @@
 import { Vec } from './Vec';
 import { staticImplements } from '../lib/util';
-import { Actor, IActor, ActorType } from './base';
+import { Actor, IActor, ActorType, GameObject } from './base';
+import { State } from '../State';
 
 @staticImplements<IActor<Lava>>()
-export class Lava extends Actor {
+export class Lava extends Actor implements GameObject {
   pos: Vec;
   speed: Vec;
   reset?: Vec;
@@ -17,6 +18,14 @@ export class Lava extends Actor {
   }
 
   get type(): string { return ActorType.LAVA; }
+
+  update(time: number, state: State) {
+    return this;
+  }
+
+  collide(state: State): State{
+    return state;
+  }
 
   static create(pos: Vec, ch: string) {
     if (ch === '=') {
