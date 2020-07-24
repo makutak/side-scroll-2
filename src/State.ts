@@ -3,7 +3,7 @@ import { Level } from './Level';
 import { overlap } from './lib/util';
 import { GameObject } from './actors/base';
 
-enum Status {
+export enum Status {
   WON = 'won',
   LOST = 'lost',
   PLAYING = 'playing',
