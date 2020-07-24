@@ -1,7 +1,7 @@
 import { Vec } from './Vec';
 import { staticImplements } from '../lib/util';
 import { Actor, IActor, ActorType, GameObject } from './base';
-import { State } from '../State';
+import { State, Status } from '../State';
 
 @staticImplements<IActor<Lava>>()
 export class Lava extends Actor implements GameObject {
@@ -23,8 +23,8 @@ export class Lava extends Actor implements GameObject {
     return this;
   }
 
-  collide(state: State): State{
-    return state;
+  collide(state: State): State {
+    return new State(state.level, state.actors, Status.LOST);
   }
 
   static create(pos: Vec, ch: string) {
