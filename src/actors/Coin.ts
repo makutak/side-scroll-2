@@ -1,7 +1,7 @@
 import { Vec } from './Vec';
 import { staticImplements } from '../lib/util';
 import { Actor, IActor, ActorType, GameObject } from './base';
-import { State } from '../State';
+import { State, Status } from '../State';
 
 @staticImplements<IActor<Coin>>()
 export class Coin extends Actor implements GameObject {
@@ -23,8 +23,15 @@ export class Coin extends Actor implements GameObject {
     return this;
   }
 
-  collide(state: State): State{
-    return state;
+  collide(state: State): State {
+    let filterd = state.actors.filter((a: Actor) => a !== this);
+    let status = state.status;
+
+    if (!filterd.some(((a: Actor) => a.type !== ActorType.COIN))) {
+      status = Status.WON;
+    }
+
+    return new State(state.level, filterd, status);
   }
 
   static create(pos: Vec) {
