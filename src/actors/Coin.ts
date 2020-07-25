@@ -3,6 +3,9 @@ import { staticImplements } from '../lib/util';
 import { Actor, IActor, ActorType, GameObject } from './base';
 import { State, Status } from '../State';
 
+const WOBBLE_SPEED: number = 8;
+const WOBBLE_DIST: number = 0.07;
+
 @staticImplements<IActor<Coin>>()
 export class Coin extends Actor implements GameObject {
   pos: Vec;
@@ -19,8 +22,11 @@ export class Coin extends Actor implements GameObject {
 
   get type(): string { return ActorType.COIN; }
 
-  update(time: number, state: State) {
-    return this;
+  update(time: number): Coin {
+    let wobble = this.wobble + time * WOBBLE_SPEED;
+    let wobblePos = Math.sin(wobble) * WOBBLE_DIST;
+
+    return new Coin(this.basePos.plus(new Vec(0, wobblePos)), this.basePos, wobble);
   }
 
   collide(state: State): State {
