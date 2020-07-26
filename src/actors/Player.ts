@@ -3,6 +3,10 @@ import { staticImplements } from '../lib/util';
 import { Actor, IActor, ActorType } from './base';
 import { State } from '../State';
 
+const PLAYER_SPEED = 7;
+const GRAVITY = 30;
+const JUMP_SPEED = 17;
+
 @staticImplements<IActor<Player>>()
 export class Player extends Actor {
   pos: Vec;
