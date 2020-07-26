@@ -107,4 +107,3 @@ DOMDisplay.prototype.scrollPlayerIntoView = (state: State) => {
   }
 }
 */
-
