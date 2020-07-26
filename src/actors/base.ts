@@ -15,7 +15,7 @@ export abstract class Actor {
   abstract pos: Vec;
   abstract size: Vec;
   abstract get type(): string;
-  abstract update(time: number, state: State, keys?: unknown) : Actor;
+  abstract update(time: number, state: State, keys?: any) : Actor;
 }
 
 export interface GameObject {

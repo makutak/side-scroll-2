@@ -21,8 +21,28 @@ export class Player extends Actor {
 
   get type(): string { return ActorType.PLAYER; }
 
-  update(time: number, state: State) {
-    return this;
+  update(time: number, state: State, keys: any) {
+    let xSpeed = 0;
+    if (keys.ArrowLeft) xSpeed -= PLAYER_SPEED;
+    if (keys.ArrowRight) xSpeed += PLAYER_SPEED;
+    let pos = this.pos;
+    let movedX = pos.plus(new Vec(xSpeed * time, 0));
+
+    if (!state.level.touches(movedX, this.size, 'wall')) {
+      pos = movedX;
+    }
+
+    let ySpeed = this.speed.y + time * GRAVITY;
+    let movedY = pos.plus(new Vec(0, ySpeed * time));
+    if (!state.level.touches(movedY, this.size, 'wall')) {
+      pos = movedY
+    } else if (keys.ArrowUp && ySpeed > 0) {
+      ySpeed -= 0;
+    } else {
+      ySpeed = 0;
+    }
+
+    return new Player(pos, new Vec(xSpeed, ySpeed));
   }
 
   static create(pos: Vec) {
