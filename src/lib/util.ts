@@ -55,3 +55,20 @@ export const overlap = (actor1: Actor, actor2: Actor) => {
     actor1.pos.y + actor1.size.y > actor2.pos.y &&
     actor1.pos.y < actor2.pos.y + actor2.size.y;
 };
+
+export const trackKeys = (keys: string[]) => {
+  let down = Object.create(null);
+
+  const track = (event: KeyboardEvent) => {
+    if (keys.includes(event.key)) {
+      down[event.key] = event.type === 'keyDown'
+      event.preventDefault();
+    }
+  }
+
+  window.addEventListener('keyDown', track);
+  window.addEventListener('keyup', track);
+  return down;
+};
+
+export const arrowKeys = trackKeys(['ArrowLeft', 'ArrowRight', 'ArrowUp']);
