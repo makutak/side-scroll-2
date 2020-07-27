@@ -66,6 +66,19 @@ console.log(`${simpleLevel.width} by ${simpleLevel.height}`);
 const display = new DOMDisplay(document.body, simpleLevel);
 display.syncState(State.start(simpleLevel));
 
+const runAnimation = (frameFunc: (t: number) => boolean) => {
+  let lastTime = null;
+  const frame = (time: number) => {
+    if (lastTime != null) {
+      let timeStep = Math.min(time - lastTime, 100) / 1000;
+      if (frameFunc(timeStep) === false) return;
+    }
+    lastTime = time;
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
 /*
 interface DOMDisplay {
   syncState(state: State): void;
