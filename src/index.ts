@@ -1,5 +1,5 @@
-import { drawActors, elt, SCALE, drawGrid } from './lib/util';
-import { State } from './State';
+import { drawActors, elt, SCALE, drawGrid, arrowKeys } from './lib/util';
+import { State, Status } from './State';
 import { Level } from './Level';
 
 let simpleLevelPlan = `
@@ -78,6 +78,29 @@ const runAnimation = (frameFunc: (t: number) => boolean) => {
   }
   requestAnimationFrame(frame);
 }
+
+const runLevel = (level: Level, Display: DOMDisplay) => {
+  let display: = new DOMDisplay(document.body, level);
+  let state = State.start(level);
+  let ending = 1;
+
+  return new Promise(resolve => {
+    runAnimation((time: number) => {
+      state = state.update(time, arrowKeys);
+      display.syncState(state);
+      if (state.status === Status.PLAYING) {
+        return true;
+      } else if (ending > 0) {
+        ending -= time;
+        return true;
+      } else {
+        display.clear();
+        resolve(state.status);
+        return false;
+      }
+    });
+  });
+};
 
 /*
 interface DOMDisplay {
