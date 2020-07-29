@@ -102,6 +102,15 @@ const runLevel = (level: Level, Display: DOMDisplay) => {
   });
 };
 
+const runGame = async (plans: string[], Display: DOMDisplay) => {
+  for (let level = 0; level < plans.length; length++) {
+    let status = await runLevel(new Level(plans[level]), Display);
+
+    if (status === Status.WON) level++;
+  }
+  console.log(`You've won!`);
+}
+
 /*
 interface DOMDisplay {
   syncState(state: State): void;
