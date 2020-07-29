@@ -80,7 +80,7 @@ const runAnimation = (frameFunc: (t: number) => boolean) => {
 }
 
 const runLevel = (level: Level, Display: DOMDisplay) => {
-  let display: = new DOMDisplay(document.body, level);
+  let display = new DOMDisplay(document.body, level);
   let state = State.start(level);
   let ending = 1;
 
@@ -94,7 +94,7 @@ const runLevel = (level: Level, Display: DOMDisplay) => {
         ending -= time;
         return true;
       } else {
-        display.clear();
+        display.cleaer();
         resolve(state.status);
         return false;
       }
