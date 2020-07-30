@@ -66,7 +66,7 @@ export class Player {
     }
   }
 
-  move(rightPressed: boolean, leftPressed: boolean): void {
+  move(rightPressed: boolean, leftPressed: boolean, upPressed: boolean): void {
     if (rightPressed) {
       this.direction = Direcion.RIGHT;
       this.positionX += this.dx;
@@ -77,6 +77,10 @@ export class Player {
       this.direction = Direcion.LEFT;
       this.positionX -= this.dx;
       this.makeFrameByFrame();
+    }
+
+    if (upPressed) {
+      console.log("up pressed!!");
     }
   }
 

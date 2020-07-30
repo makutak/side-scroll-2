@@ -124,7 +124,7 @@ const animate = (now: number) => {
   fps = calculateFps(now);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   player.draw();
-  player.move(rightPressed, leftPressed);
+  player.move(rightPressed, leftPressed, upPressed);
   requestNextAnimationFrame(animate);
 }
 
