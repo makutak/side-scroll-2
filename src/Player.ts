@@ -17,6 +17,7 @@ export class Player {
   dy: number = 2;
   offsetX: number = ONE_FRAME_WIDTH;
   currentFrame: number = 0;
+  isJump: boolean = false;
 
   direction: Direcion = Direcion.RIGHT;;
   constructor(ctx: CanvasRenderingContext2D, x: number, y: number) {
@@ -80,6 +81,9 @@ export class Player {
     }
 
     if (upPressed) {
+      if (!this.isJump) {
+        this.isJump = true;
+      }
       console.log("up pressed!!");
     }
   }
