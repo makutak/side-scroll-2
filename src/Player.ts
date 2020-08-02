@@ -15,6 +15,7 @@ export class Player {
   positionY: number;
   dx: number = 2;
   dy: number = 2;
+  addNumY: number = 0;
   offsetX: number = ONE_FRAME_WIDTH;
   currentFrame: number = 0;
   isJump: boolean = false;
@@ -83,7 +84,16 @@ export class Player {
     if (upPressed) {
       if (!this.isJump) {
         this.isJump = true;
+        if (upPressed) {
+          this.addNumY = 19;
+        } else {
+          this.addNumY = 16;
+        }
       }
+      if (this.isJump) {
+        this.positionY -= this.addNumY;
+      }
+
       console.log("up pressed!!");
     }
   }
