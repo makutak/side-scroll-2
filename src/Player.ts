@@ -8,6 +8,9 @@ enum Direcion {
 const MAX_FRAME_COUNT = 4;
 
 const ONE_FRAME_WIDTH = 47;
+
+const MAX_GRAVITY = 10;
+
 export class Player {
   ctx: CanvasRenderingContext2D;
   img: HTMLImageElement = new Image();
@@ -19,6 +22,7 @@ export class Player {
   offsetX: number = ONE_FRAME_WIDTH;
   currentFrame: number = 0;
   isJump: boolean = false;
+  jumpCnt: number = 0;
 
   direction: Direcion = Direcion.RIGHT;;
   constructor(ctx: CanvasRenderingContext2D, x: number, y: number) {
@@ -94,6 +98,17 @@ export class Player {
       if (this.isJump) {
         console.log('########## isJump!!! ############');
         this.positionY -= this.addNumY;
+
+
+        // タイマー
+        if (this.jumpCnt++ % 2 === 0) {
+          this.addNumY -= 2;
+          if (this.addNumY < -MAX_GRAVITY) {
+            this.addNumY = -MAX_GRAVITY;
+          }
+        }
+
+        // 地面
       }
     }
   }
