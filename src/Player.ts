@@ -82,6 +82,7 @@ export class Player {
     }
 
     if (upPressed) {
+      console.log("########## upPressed!! ###########");
       if (!this.isJump) {
         this.isJump = true;
         if (upPressed) {
@@ -91,10 +92,9 @@ export class Player {
         }
       }
       if (this.isJump) {
+        console.log('########## isJump!!! ############');
         this.positionY -= this.addNumY;
       }
-
-      console.log("up pressed!!");
     }
   }
 
