@@ -23,6 +23,7 @@ export class Player {
   currentFrame: number = 0;
   isJump: boolean = false;
   jumpCnt: number = 0;
+  groundPosY: number;
 
   direction: Direcion = Direcion.RIGHT;;
   constructor(ctx: CanvasRenderingContext2D, x: number, y: number) {
@@ -31,6 +32,7 @@ export class Player {
     this.img.onload = () => {
       this.positionX = x;
       this.positionY = y - this.img.height;
+      this.groundPosY = this.positionY;
     }
   }
 
@@ -109,6 +111,11 @@ export class Player {
         }
 
         // 地面
+        if (this.positionY >= this.groundPosY) {
+          this.addNumY = 0;
+          this.positionY = this.groundPosY
+          this.isJump = false;
+        }
       }
     }
   }
