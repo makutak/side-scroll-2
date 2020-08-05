@@ -112,6 +112,7 @@ export class Player {
 
         // 地面
         if (this.positionY >= this.groundPosY) {
+          console.log('###### Ground ######')
           this.addNumY = 0;
           this.positionY = this.groundPosY
           this.isJump = false;
