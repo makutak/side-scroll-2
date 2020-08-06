@@ -101,7 +101,6 @@ export class Player {
         console.log('########## isJump!!! ############');
         this.positionY -= this.addNumY;
 
-
         // タイマー
         if (this.jumpCnt++ % 2 === 0) {
           this.addNumY -= 2;
