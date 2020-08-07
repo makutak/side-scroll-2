@@ -113,7 +113,7 @@ export class Player {
         if (this.positionY >= this.groundPosY) {
           console.log('###### Ground ######')
           this.addNumY = 0;
-          this.positionY = this.groundPosY
+          this.positionY = this.groundPosY;
           this.isJump = false;
         }
       }
