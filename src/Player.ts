@@ -6,7 +6,6 @@ enum Direcion {
   LEFT = 'left',
 }
 const MAX_FRAME_COUNT = 4;
-
 const ONE_FRAME_WIDTH = 47;
 
 const MAX_GRAVITY = 10;
@@ -41,8 +40,6 @@ export class Player {
   }
 
   draw(): void {
-    //console.log('player draw; ');
-    //console.log(this.positionY)
     if (this.direction === Direcion.LEFT) {
       this.ctx.save();
       this.ctx.transform(-1, 0, 0, 1, 0, 0);
