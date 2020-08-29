@@ -6,8 +6,10 @@ enum Direcion {
   LEFT = 'left',
 }
 const MAX_FRAME_COUNT = 4;
-
 const ONE_FRAME_WIDTH = 47;
+
+const MAX_GRAVITY = 10;
+
 export class Player {
   ctx: CanvasRenderingContext2D;
   img: HTMLImageElement = new Image();
@@ -15,8 +17,12 @@ export class Player {
   positionY: number;
   dx: number = 2;
   dy: number = 2;
+  addNumY: number = 0;
   offsetX: number = ONE_FRAME_WIDTH;
   currentFrame: number = 0;
+  isJump: boolean = false;
+  jumpCnt: number = 0;
+  groundPosY: number;
 
   direction: Direcion = Direcion.RIGHT;;
   constructor(ctx: CanvasRenderingContext2D, x: number, y: number) {
@@ -25,6 +31,7 @@ export class Player {
     this.img.onload = () => {
       this.positionX = x;
       this.positionY = y - this.img.height;
+      this.groundPosY = this.positionY;
     }
   }
 
@@ -33,8 +40,6 @@ export class Player {
   }
 
   draw(): void {
-    //console.log('player draw; ');
-    //console.log(this.positionY)
     if (this.direction === Direcion.LEFT) {
       this.ctx.save();
       this.ctx.transform(-1, 0, 0, 1, 0, 0);
@@ -66,7 +71,7 @@ export class Player {
     }
   }
 
-  move(rightPressed: boolean, leftPressed: boolean): void {
+  move(rightPressed: boolean, leftPressed: boolean, upPressed: boolean): void {
     if (rightPressed) {
       this.direction = Direcion.RIGHT;
       this.positionX += this.dx;
@@ -77,6 +82,38 @@ export class Player {
       this.direction = Direcion.LEFT;
       this.positionX -= this.dx;
       this.makeFrameByFrame();
+    }
+
+    if (upPressed) {
+      console.log("########## upPressed!! ###########");
+      if (!this.isJump) {
+        this.isJump = true;
+        if (upPressed) {
+          this.addNumY = 19;
+        } else {
+          this.addNumY = 16;
+        }
+      }
+      if (this.isJump) {
+        console.log('########## isJump!!! ############');
+        this.positionY -= this.addNumY;
+
+        // タイマー
+        if (this.jumpCnt++ % 2 === 0) {
+          this.addNumY -= 2;
+          if (this.addNumY < -MAX_GRAVITY) {
+            this.addNumY = -MAX_GRAVITY;
+          }
+        }
+
+        // 地面
+        if (this.positionY >= this.groundPosY) {
+          console.log('###### Ground ######');
+          this.addNumY = 0;
+          this.positionY = this.groundPosY;
+          this.isJump = false;
+        }
+      }
     }
   }
 
