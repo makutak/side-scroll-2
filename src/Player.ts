@@ -8,6 +8,9 @@ enum Direcion {
 const MAX_FRAME_COUNT = 4;
 
 const ONE_FRAME_WIDTH = 47;
+const JUST_JUMP_TIME = 20;	// ジャストジャンプの有効時間
+const MAX_GRAVITY = 10;		// 最大落下速度
+
 export class Player {
   ctx: CanvasRenderingContext2D;
   img: HTMLImageElement = new Image();
@@ -17,6 +20,9 @@ export class Player {
   dy: number = 2;
   offsetX: number = ONE_FRAME_WIDTH;
   currentFrame: number = 0;
+  isJump: boolean = false;
+  jumpCnt: number = 0;
+  groundPositionY: number;
 
   direction: Direcion = Direcion.RIGHT;;
   constructor(ctx: CanvasRenderingContext2D, x: number, y: number) {
@@ -25,6 +31,7 @@ export class Player {
     this.img.onload = () => {
       this.positionX = x;
       this.positionY = y - this.img.height;
+      this.groundPositionY = this.positionY;
     }
   }
 
@@ -66,7 +73,12 @@ export class Player {
     }
   }
 
-  move(rightPressed: boolean, leftPressed: boolean): void {
+  move(
+    rightPressed: boolean,
+    leftPressed: boolean,
+    upPressed: boolean,
+    downPressed: boolean
+  ): void {
     if (rightPressed) {
       this.direction = Direcion.RIGHT;
       this.positionX += this.dx;
@@ -77,6 +89,40 @@ export class Player {
       this.direction = Direcion.LEFT;
       this.positionX -= this.dx;
       this.makeFrameByFrame();
+    }
+
+    if (upPressed) {
+      console.log('↑↑↑↑↑↑↑↑ upPressed ↑↑↑↑↑↑↑↑↑');
+
+      if (!this.isJump) {
+        this.isJump = true;
+        this.dy = 16;
+      }
+      this.makeFrameByFrame();
+    }
+
+    if (this.isJump) {
+      this.positionY -= this.dy;
+      if (this.jumpCnt++ % 2 === 0) {
+        this.dy -= 2;
+
+        // タイマーセット
+        if (this.dy < -MAX_GRAVITY) {
+          this.dy = -MAX_GRAVITY;
+        }
+
+        // 地面に着いた
+        if (this.positionY >= this.groundPositionY) {
+          this.dy = 0;
+          this.positionY = this.groundPositionY;
+          this.isJump = false;
+        }
+      }
+      this.makeFrameByFrame();  
+    }
+
+    if (downPressed) {
+      console.log('↓↓↓↓↓↓↓↓ upPressed ↓↓↓↓↓↓↓↓↓');
     }
   }
 

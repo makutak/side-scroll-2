@@ -251,7 +251,7 @@ const animate = (now: number) => {
   fps = calculateFps(now);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   player.draw();
-  player.move(rightPressed, leftPressed);
+  player.move(rightPressed, leftPressed, upPressed, downPressed);
   //console.log('right pressed', rightPressed)
   // console.log('left pressed', leftPressed)
   //console.log(player.direction);
