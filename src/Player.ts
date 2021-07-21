@@ -1,5 +1,4 @@
 const image = require('./images/miku.png');
-//const image = require('./images/sMario.png');
 
 enum Direcion {
   RIGHT = 'right',
@@ -7,8 +6,7 @@ enum Direcion {
 }
 const MAX_FRAME_COUNT = 4;
 const ONE_FRAME_WIDTH = 47;
-const JUST_JUMP_TIME = 20;	// ジャストジャンプの有効時間
-const MAX_GRAVITY = 10;		// 最大落下速度
+const MAX_GRAVITY = 10;
 
 export class Player {
   ctx: CanvasRenderingContext2D;
