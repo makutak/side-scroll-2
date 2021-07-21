@@ -6,7 +6,6 @@ enum Direcion {
   LEFT = 'left',
 }
 const MAX_FRAME_COUNT = 4;
-
 const ONE_FRAME_WIDTH = 47;
 const JUST_JUMP_TIME = 20;	// ジャストジャンプの有効時間
 const MAX_GRAVITY = 10;		// 最大落下速度
