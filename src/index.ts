@@ -1,5 +1,6 @@
 import { requestNextAnimationFrame, calculateFps } from './requestNextAnimationFrame';
 import { Player } from './Player';
+import BaseGround from './images/base.jpg';
 
 const canvas: HTMLCanvasElement = document.getElementById('app') as HTMLCanvasElement;
 const ctx: CanvasRenderingContext2D = canvas.getContext('2d');
@@ -45,8 +46,6 @@ const keyCodes = {
   up: "ArrowUp",
   down: "ArrowDown",
 };
-
-let isJump = false;
 
 const keyDownHandler = (e: KeyboardEvent) => {
   const pressed = e.code;
@@ -101,15 +100,27 @@ let fps: number;
 const y0 = canvas.height
 const x0 = 0;
 
-const player = new Player(ctx, x0, y0);
+const player = new Player(ctx, x0, y0 - 32);
+
+const blocks = [
+  { x: 0, y: 480 - 32, w: 200, h: 32 },
+  { x: 250, y: 480 - 32 * 2, w: 200, h: 32 },
+  { x: 500, y: 480 - 32 * 3, w: 530, h: 32 }
+];
 
 const animate = (now: number) => {
   fps = calculateFps(now);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   player.draw();
   player.move(rightPressed, leftPressed, upPressed, downPressed);
+
+  const groundImage = new Image();
+  groundImage.src = BaseGround;
+  for (const block of blocks) {
+    ctx.drawImage(groundImage, block.x, block.y, block.w, block.h);
+  }
+
   requestNextAnimationFrame(animate);
 }
 
 requestNextAnimationFrame(animate);
-
