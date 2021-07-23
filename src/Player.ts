@@ -1,4 +1,4 @@
-const image = require('./images/miku.png');
+import Miku from './images/miku.png';
 
 enum Direcion {
   RIGHT = 'right',
@@ -24,7 +24,7 @@ export class Player {
   direction: Direcion = Direcion.RIGHT;;
   constructor(ctx: CanvasRenderingContext2D, x: number, y: number) {
     this.ctx = ctx;
-    this.img.src = image;
+    this.img.src = Miku;
     this.img.onload = () => {
       this.positionX = x;
       this.positionY = y - this.img.height;
