@@ -19,18 +19,22 @@ const ctx: CanvasRenderingContext2D = canvas.getContext('2d');
 //   [1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 // ];
 
+// canvas が 640 x 480 なので 32分割した配列を用意してる
 const STAGE = [
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0],
-  [1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0],
+  [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
 ];
 
 
@@ -97,29 +101,41 @@ addEventListener('keyup', keyUpHandler, false);
 
 let fps: number;
 
+// 左下を原点にしたい
 const y0 = canvas.height
 const x0 = 0;
 
-const player = new Player(ctx, x0, y0 - 32);
+const player = new Player(ctx, x0, y0);
+// player_height: 64
 
-const blocks = [
-  { x: 0, y: 480 - 32, w: 200, h: 32 },
-  { x: 250, y: 480 - 32 * 2, w: 200, h: 32 },
-  { x: 500, y: 480 - 32 * 3, w: 530, h: 32 }
-];
+const blockWidth = 32;
 
+// const groundImage = new Image();
+// groundImage.src = BaseGround;
+//
 const animate = (now: number) => {
   fps = calculateFps(now);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+
   player.draw();
   player.move(rightPressed, leftPressed, upPressed, downPressed);
+  //ctx.drawImage(groundImage, blockX, blockY, 32, 32);
 
-  const groundImage = new Image();
-  groundImage.src = BaseGround;
-  for (const block of blocks) {
-    ctx.drawImage(groundImage, block.x, block.y, block.w, block.h);
+  // ステージ描画
+  for (let c = 0; c < STAGE[0].length; c++) {
+    for (let r = 0; r < STAGE.length; r++) {
+      if (STAGE[r][c] === 1) {
+        const blockX = (c * (blockWidth)) + 32;
+        const blockY = (r * (blockWidth)) + 32;
+        ctx.beginPath();
+        ctx.rect(blockX, blockY, blockWidth, blockWidth);
+        ctx.fillStyle = "#0095DD";
+        ctx.stroke();
+        ctx.fill();
+        ctx.closePath();
+      }
+    }
   }
-
   requestNextAnimationFrame(animate);
 }
 
